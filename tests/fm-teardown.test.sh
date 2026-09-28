@@ -4133,15 +4133,20 @@ test_idle_pool_holder_does_not_block_teardown() {
 
 # The state a cut-off pool return leaves: HEAD detached on the landed task
 # commit while the index and tracked files already hold the default branch.
-# The fake pool return records each call in treehouse.log.
-setup_interrupted_pool_reset() {  # <case_dir>
-  local case_dir=$1
+# The fake pool return records each call in treehouse.log and resets the slot
+# the way `treehouse return --force` does: HEAD detached at the default branch
+# with the index and tracked files reset to it and untracked files cleaned.
+setup_interrupted_pool_reset() {  # <case_dir> [<index-commit>]
+  local case_dir=$1 index=${2:-refs/remotes/origin/main}
   git -C "$case_dir/wt" checkout -q --detach
-  git -C "$case_dir/wt" read-tree --reset -u refs/remotes/origin/main
+  git -C "$case_dir/wt" read-tree --reset -u "$index"
   cat > "$case_dir/fakebin/treehouse" <<SH
 #!/usr/bin/env bash
 printf '%s\n' "\$*" >> '$case_dir/treehouse.log'
-exit 0
+slot=\${!#}
+git -C "\$slot" checkout -q --detach
+git -C "\$slot" reset -q --hard refs/remotes/origin/main
+git -C "\$slot" clean -qfd
 SH
   chmod +x "$case_dir/fakebin/treehouse"
 }
@@ -4166,12 +4171,16 @@ test_interrupted_pool_reset_is_finished_without_force() {
     "interrupted-pool-reset: teardown did not name the interrupted reset"
   assert_present "$case_dir/treehouse.log" \
     "interrupted-pool-reset: teardown did not hand the slot to the pool return"
+  [ "$(git -C "$case_dir/wt" rev-parse HEAD)" = "$(git -C "$case_dir/wt" rev-parse refs/remotes/origin/main)" ] \
+    || fail "interrupted-pool-reset: the slot HEAD was not reset to the default branch"
+  [ -z "$(git -C "$case_dir/wt" status --porcelain)" ] \
+    || fail "interrupted-pool-reset: the slot was left dirty after the pool return"
   pass "a pool reset cut off before it moved HEAD is finished by a plain teardown"
 }
 
 test_interrupted_pool_reset_shape_never_hides_real_work() {
   local variant case_dir rc head
-  for variant in untracked-file worktree-edit staged-edit hidden-untracked unlanded-head; do
+  for variant in untracked-file worktree-edit staged-edit hidden-untracked unlanded-head historical-rollback; do
     case_dir=$(make_case "interrupted-reset-$variant")
     write_meta "$case_dir" no-mistakes ship
     if [ "$variant" = unlanded-head ]; then
@@ -4181,7 +4190,13 @@ test_interrupted_pool_reset_shape_never_hides_real_work() {
     else
       land_merged_work_then_move_main "$case_dir"
     fi
-    setup_interrupted_pool_reset "$case_dir"
+    if [ "$variant" = historical-rollback ]; then
+      # A staged rollback to the default branch's tree from before the task
+      # landed matches its history but does not contain HEAD's work.
+      setup_interrupted_pool_reset "$case_dir" refs/remotes/origin/main~2
+    else
+      setup_interrupted_pool_reset "$case_dir"
+    fi
     case "$variant" in
       untracked-file)
         printf '%s\n' "new work" > "$case_dir/wt/notes.txt"
@@ -4204,16 +4219,10 @@ test_interrupted_pool_reset_shape_never_hides_real_work() {
     run_teardown "$case_dir" > "$case_dir/stdout" 2> "$case_dir/stderr" || rc=$?
 
     expect_code 1 "$rc" "interrupted-reset-$variant: teardown should refuse"
-    if [ "$variant" = unlanded-head ]; then
-      # The index really is the default branch here; HEAD's commit is not.
-      assert_grep "not on any remote and not landed" "$case_dir/stderr" \
-        "interrupted-reset-$variant: refusal did not cite the unlanded commit"
-    else
-      assert_grep "uncommitted changes present" "$case_dir/stderr" \
-        "interrupted-reset-$variant: refusal did not cite uncommitted changes"
-      assert_no_grep "cut off before it moved HEAD" "$case_dir/stderr" \
-        "interrupted-reset-$variant: real work was recognized as an interrupted reset"
-    fi
+    assert_grep "uncommitted changes present" "$case_dir/stderr" \
+      "interrupted-reset-$variant: refusal did not cite uncommitted changes"
+    assert_no_grep "cut off before it moved HEAD" "$case_dir/stderr" \
+      "interrupted-reset-$variant: real work was recognized as an interrupted reset"
     [ "$(git -C "$case_dir/wt" rev-parse HEAD)" = "$head" ] \
       || fail "interrupted-reset-$variant: refusal moved HEAD"
     [ -e "$case_dir/state/task-x1.meta" ] \
@@ -4223,7 +4232,7 @@ test_interrupted_pool_reset_shape_never_hides_real_work() {
       assert_present "$case_dir/wt/notes.txt" "interrupted-reset-$variant: refusal lost the untracked file"
     fi
   done
-  pass "the interrupted-reset recognition refuses untracked, edited, staged-beyond-default, and unlanded work"
+  pass "the interrupted-reset recognition refuses untracked, edited, staged-beyond-default, unlanded, and rolled-back work"
 }
 
 test_run_abort_precedes_process_reap_precedes_worktree_removal() {

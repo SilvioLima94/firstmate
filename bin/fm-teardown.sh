@@ -1885,17 +1885,21 @@ teardown_treehouse_return() {
 TEARDOWN_IGNORABLE_UNTRACKED='(\.claude/|\.fm-(grok|kimi)-turnend$)'
 
 # A pool reset cut off before it moved HEAD (see script header, Fix 2) leaves
-# the slot's index and tracked files holding a default-branch commit exactly
-# while HEAD still names the task commit, so every entry reads as staged. That
-# content is on the default branch by construction, so it is not uncommitted
-# work, and HEAD's own commits still face the landed-work checks below. An
-# untracked file, a worktree edit, a conflict, or an index matching no commit
-# in the default branch's recent first-parent history is real work: no match.
+# HEAD detached on the task commit (the return detaches before it resets)
+# while the slot's index and tracked files hold a default-branch commit
+# exactly, so every entry reads as staged. That content is on the default
+# branch by construction, so it is not uncommitted work, and HEAD's own
+# commits still face the landed-work checks below. The matched commit must
+# also already contain HEAD's work (merging HEAD into it changes nothing), so
+# it is at or after the task's landing: a staged rollback to a default-branch
+# tree from before the landing is real work. An attached HEAD, an untracked
+# file, a worktree edit, a conflict, or an index matching no such commit in
+# the default branch's recent first-parent history is real work: no match.
 # The remote-tracking default is always a candidate; local-only work also
 # lands on the local default branch, so that is a candidate only there.
 INTERRUPTED_RESET_REF=
 worktree_is_interrupted_pool_reset() {  # <non-ignorable porcelain entries>
-  local entries=$1 line others name tree ref
+  local entries=$1 line others name tree ref commit merged
   local -a refs=()
   INTERRUPTED_RESET_REF=
   while IFS= read -r line; do
@@ -1907,6 +1911,7 @@ worktree_is_interrupted_pool_reset() {  # <non-ignorable porcelain entries>
   done <<EOF
 $entries
 EOF
+  ! git -C "$WT" symbolic-ref --quiet HEAD >/dev/null 2>&1 || return 1
   git -C "$WT" diff --quiet -- 2>/dev/null || return 1
   others=$(git -C "$WT" ls-files --others --exclude-standard 2>/dev/null) || return 1
   others=$(printf '%s\n' "$others" | grep -vE "^$TEARDOWN_IGNORABLE_UNTRACKED" | sed '/^$/d' || true)
@@ -1921,11 +1926,14 @@ EOF
     refs+=("refs/heads/$name")
   fi
   for ref in "${refs[@]+"${refs[@]}"}"; do
-    if git -C "$WT" log --first-parent --format=%T -n 1000 "$ref" -- 2>/dev/null \
-       | grep -Fxq "$tree"; then
-      INTERRUPTED_RESET_REF=$ref
-      return 0
-    fi
+    for commit in $(git -C "$WT" log --first-parent --format='%T %H' -n 1000 "$ref" -- 2>/dev/null \
+                      | awk -v tree="$tree" '$1 == tree { print $2 }'); do
+      merged=$(git -C "$WT" merge-tree --write-tree "$commit" HEAD 2>/dev/null) || continue
+      if [ "$(printf '%s\n' "$merged" | head -1)" = "$tree" ]; then
+        INTERRUPTED_RESET_REF=$ref
+        return 0
+      fi
+    done
   done
   return 1
 }
@@ -2287,7 +2295,9 @@ EOF
 # no step for FM_TEARDOWN_POOL_RETURN_QUIET_SECS (it is idle, for example at
 # its own prompt, and teardown's own return handles the slot); return 1 when
 # the scan fails; return 2 when steps are still running at
-# FM_TEARDOWN_POOL_RETURN_WAIT_SECS, leaving them to finish.
+# FM_TEARDOWN_POOL_RETURN_WAIT_SECS, leaving them to finish. The quiet window
+# only has to span the gaps between steps: treehouse runs its return steps
+# back to back, and a slow step keeps a live step process under the slot.
 POOL_RETURN_WAIT_SECS=${FM_TEARDOWN_POOL_RETURN_WAIT_SECS:-60}
 case "$POOL_RETURN_WAIT_SECS" in ''|*[!0-9]*) POOL_RETURN_WAIT_SECS=60 ;; esac
 POOL_RETURN_QUIET_SECS=${FM_TEARDOWN_POOL_RETURN_QUIET_SECS:-2}
