@@ -2293,22 +2293,22 @@ case "$POOL_RETURN_WAIT_SECS" in ''|*[!0-9]*) POOL_RETURN_WAIT_SECS=60 ;; esac
 POOL_RETURN_QUIET_SECS=${FM_TEARDOWN_POOL_RETURN_QUIET_SECS:-2}
 case "$POOL_RETURN_QUIET_SECS" in ''|*[!0-9]*) POOL_RETURN_QUIET_SECS=2 ;; esac
 wait_for_pool_return() {  # <dir>...
-  local deadline quiet_polls=0 reported=0
+  local deadline last_step reported=0
   [ -n "$TASK_POOL_HOLDERS" ] || return 0
   deadline=$((SECONDS + POOL_RETURN_WAIT_SECS))
+  last_step=$SECONDS
   while task_pool_holder_alive; do
     task_pids_under_roots "$@" || return 1
     task_pool_classify "$TASK_PIDS"
     if [ -n "$TASK_POOL_STEPS" ]; then
-      quiet_polls=0
+      last_step=$SECONDS
       if [ "$reported" = 0 ]; then
         echo "teardown: waiting for treehouse's own return of the worktree for $ID to finish" >&2
         reported=1
       fi
       [ "$SECONDS" -lt "$deadline" ] || return 2
     else
-      quiet_polls=$((quiet_polls + 1))
-      [ "$quiet_polls" -le $((POOL_RETURN_QUIET_SECS * 5)) ] || return 0
+      [ $((SECONDS - last_step)) -lt "$POOL_RETURN_QUIET_SECS" ] || return 0
     fi
     sleep 0.2
   done
