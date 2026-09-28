@@ -1892,7 +1892,12 @@ TEARDOWN_IGNORABLE_UNTRACKED='(\.claude/|\.fm-(grok|kimi)-turnend$)'
 # commits still face the landed-work checks below. The matched commit must
 # also already contain HEAD's work (merging HEAD into it changes nothing), so
 # it is at or after the task's landing: a staged rollback to a default-branch
-# tree from before the landing is real work. An attached HEAD, an untracked
+# tree from before the landing is real work. Deliberate limitation: if the
+# default branch reverts or alters the merged task's changes before teardown,
+# a genuine interrupted reset fails this contains-HEAD's-work check and plain
+# teardown refuses; that refusal is safe (the captain's --force finishes it)
+# and is the accepted price for never discarding a staged rollback to a
+# historical default-branch tree. An attached HEAD, an untracked
 # file, a worktree edit, a conflict, or an index matching no such commit in
 # the default branch's recent first-parent history is real work: no match.
 # The remote-tracking default is always a candidate; local-only work also
