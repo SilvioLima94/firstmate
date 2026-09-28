@@ -1,0 +1,4 @@
+ok - the reaper lets the treehouse holder's own return of the slot finish instead of reaping its git steps
+ok - an idle treehouse holder outside the task roots neither blocks teardown nor is signalled
+ok - a pool reset cut off before it moved HEAD is finished by a plain teardown
+ok - the interrupted-reset recognition refuses untracked, edited, staged-beyond-default, and unlanded work

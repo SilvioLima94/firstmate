@@ -1,0 +1,24 @@
+== live lab [idle] teardown tree: /Users/young/.no-mistakes/worktrees/ddd7aba8785a/01M3MXVAH57A3TG7GA5NTA6072
+treehouse v3.1.0 / tmux 3.7b / git version 2.50.1 (Apple Git-155)
+slot acquired by real 'treehouse get': /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.0xnNOU/pool/.treehouse/demo-143998/1/demo
+task commit on fm/task-x1: 890f300b75eb966b9e88d02babac23d11272d280
+origin/main after squash merge: 82b4425c878e4f03174b31fd1d6db4e6dec97f79
+treehouse holder pid=45997 (cwd /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.0xnNOU/projects/demo); worker subshell pid=50067
+worker left firstmate's own .claude/settings.local.json (untracked); teardown will make the holder prompt
+teardown start: 17:32:05
+
+---- [fix] plain 'fm-teardown.sh task-x1' attempt 1: exit 0 (31s)
+  stderr| teardown: reaping leaked worktree process(es) for task-x1: 50067 50724
+  stderr| teardown: force-killing leaked worktree process(es) for task-x1: 50067
+  stderr| teardown: waiting for treehouse's own return of the worktree for task-x1 to finish
+  stdout| 🌳 Worktree returned to pool.
+  stdout| demo: synced 6dd93fb..82b4425
+  stdout| teardown task-x1 complete (window firstmate:fm-task-x1, worktree /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.0xnNOU/pool/.treehouse/demo-143998/1/demo)
+teardown end: 17:32:36; 17:32:25 holder exited
+
+---- final state
+task window present: no
+task meta present: no
+  slot: HEAD=82b4425 (HEAD); task commit=890f300; origin/main=82b4425
+  staged-vs-HEAD entries: | diff --quiet: pass | index==origin/main: yes | porcelain: 
+  treehouse status: 1 available /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.0xnNOU/pool/.treehouse/demo-143998/1/demo (detached)

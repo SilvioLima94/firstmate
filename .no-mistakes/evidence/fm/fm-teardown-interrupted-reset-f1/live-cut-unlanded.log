@@ -1,0 +1,44 @@
+== live lab [cut-unlanded] teardown tree: /Users/young/.no-mistakes/worktrees/ddd7aba8785a/01M3MXVAH57A3TG7GA5NTA6072
+treehouse v3.1.0 / tmux 3.7b / git version 2.50.1 (Apple Git-155)
+slot acquired by real 'treehouse get': /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo
+task commit on fm/task-x1: b84fcc9edd8651c046e690a941e1ec742fb03196
+origin/main after squash merge: d4d3dd54def42be0c0e273d2623d2d4953bd8e04
+treehouse holder pid=22881 (cwd /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/projects/demo); worker subshell pid=23098
+killing worker subshell 23098 (as the reaper does) and waiting for the holder's clean step
+holder clean step pid=34553: /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+holder alive after its step was cut: no
+pane after the cut:
+  pane| [1]    24927 killed     sleep 900
+  pane| 🌳 Warning: git clean -fd: ; leaving worktree in place.
+  pane| git clean -fd:
+  pane| $
+== persistent interrupted-reset state:
+  slot: HEAD=b84fcc9 (HEAD); task commit=b84fcc9; origin/main=d4d3dd5
+  staged-vs-HEAD entries: D	feature.txt A	other.txt | diff --quiet: pass | index==origin/main: yes | porcelain: D  feature.txt;A  other.txt;
+  treehouse status: 1 dirty /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo (detached)
+  task commit landed on origin/main? content check: no (feature.txt absent from origin/main)
+
+---- [fix, unlanded task commit] plain 'fm-teardown.sh task-x1' attempt 1: exit 1 (1s)
+  stderr| teardown: /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo holds a pool reset cut off before it moved HEAD (index and tracked files match refs/remotes/origin/main exactly, nothing untracked); letting the pool return finish it
+  stderr| REFUSED: worktree /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo has work not on any remote and not landed.
+  stderr| unpushed commits:
+  stderr| b84fcc9 add feature
+  stderr| Push the branch, land its PR, or get the captain's explicit OK to discard, then --force.
+  slot: HEAD=b84fcc9 (HEAD); task commit=b84fcc9; origin/main=d4d3dd5
+  staged-vs-HEAD entries: D	feature.txt A	other.txt | diff --quiet: pass | index==origin/main: yes | porcelain: D  feature.txt;A  other.txt;
+  treehouse status: 1 dirty /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo (detached)
+  task commit still reachable: commit
+
+---- [fix retry, unlanded task commit] plain 'fm-teardown.sh task-x1' attempt 2: exit 1 (1s)
+  stderr| teardown: /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo holds a pool reset cut off before it moved HEAD (index and tracked files match refs/remotes/origin/main exactly, nothing untracked); letting the pool return finish it
+  stderr| REFUSED: worktree /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo has work not on any remote and not landed.
+  stderr| unpushed commits:
+  stderr| b84fcc9 add feature
+  stderr| Push the branch, land its PR, or get the captain's explicit OK to discard, then --force.
+
+---- final state
+task window present: yes
+task meta present: yes
+  slot: HEAD=b84fcc9 (HEAD); task commit=b84fcc9; origin/main=d4d3dd5
+  staged-vs-HEAD entries: D	feature.txt A	other.txt | diff --quiet: pass | index==origin/main: yes | porcelain: D  feature.txt;A  other.txt;
+  treehouse status: 1 dirty /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.Q4aIAk/pool/.treehouse/demo-57c05d/1/demo (detached)

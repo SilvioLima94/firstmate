@@ -1,0 +1,70 @@
+== live lab [base] teardown tree: /var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-tdtest.UISoku/base
+treehouse v3.1.0 / tmux 3.7b / git version 2.50.1 (Apple Git-155)
+slot acquired by real 'treehouse get': /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/pool/.treehouse/demo-462020/1/demo
+task commit on fm/task-x1: 519851281a76119ec6136faea5772b464bc92756
+origin/main after squash merge: 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+pane shell pid=40255; treehouse holder pid=41470 (cwd /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/projects/demo)
+process tree under holder before teardown:
+  child of holder: 45323 41470 /bin/zsh
+
+---- plain 'fm-teardown.sh task-x1' attempt 1: exit 1 (7s since first attempt)
+  stderr| fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp
+  stderr| teardown: reaping leaked worktree process(es) for task-x1: 45323 46091
+  stderr| teardown: force-killing leaked worktree process(es) for task-x1: 45323
+  stderr| teardown: reaping leaked worktree process(es) for task-x1: 47514
+  stderr| teardown: reaping leaked worktree process(es) for task-x1: 47518 47523
+  stderr| REFUSED: leaked worktree processes for task-x1 remain after 3 reap attempts; preserving the worktree/tasktmp for manual inspection or retry.
+  slot state after attempt 1: HEAD=519851281a76119ec6136faea5772b464bc92756 branch=fm/task-x1
+  staged entries vs HEAD: 
+  git diff --quiet: clean; index==origin/main: no
+
+---- plain 'fm-teardown.sh task-x1' attempt 2: exit 0 (29s since first attempt)
+  stderr| fm-gate-refuse: gate agent lifecycle permitted only against lab home /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp
+  stdout| 🌳 Worktree returned to pool.
+  stdout| demo: synced 951731d..53d1987
+  stdout| teardown task-x1 complete (window firstmate:fm-task-x1, worktree /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/pool/.treehouse/demo-462020/1/demo)
+  stdout| Backlog: task-x1 just finished (this home keeps no markdown backlog at /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/data/backlog.md). Update /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/data/backlog.md - move task-x1 to Done, keep Done to the 10 most recent, then re-scan Queued and dispatch only work whose blockers are gone and date is due.
+
+---- holder git steps observed during teardown:
+17:29:13  holder step: 47514 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git checkout --detach
+17:29:14  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:15  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:15  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:16  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:16  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:17  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:17  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:17  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:18  holder step: 48212 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git status --porcelain --untracked-files=all
+17:29:19  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:19  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:19  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:20  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:20  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:21  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:21  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:21  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:22  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:22  holder step: 48450 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git read-tree --reset -u 53d1987188c0cb01dbd3d17303d2daa9e5671c8a
+17:29:23  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:23  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:24  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:24  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:24  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:25  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:25  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:26  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:26  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:27  holder step: 54730 41470 /Applications/Xcode.app/Contents/Developer/usr/bin/git clean -fd
+17:29:27  holder 41470 exited
+
+---- final state
+holder alive: no
+task window present: no
+task meta present: no
+slot HEAD: 53d1987188c0cb01dbd3d17303d2daa9e5671c8a (origin/main 53d1987188c0cb01dbd3d17303d2daa9e5671c8a), branch: HEAD
+slot porcelain entries: 0
+local fm/task-x1 branch: 519851281a76119ec6136faea5772b464bc92756
+treehouse status:
+  base  main  (repository default)
+  1     available    /private/var/folders/vt/36bg7pjx1711x3w5wyr1z88h0000gn/T/fm-lab.pQm8Kp/pool/.treehouse/demo-462020/1/demo  (detached)
